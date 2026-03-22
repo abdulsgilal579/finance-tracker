@@ -1,18 +1,18 @@
 import express from 'express';
 import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 import db from './db.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 
-app.use(cors({ origin: process.env.NODE_ENV === 'production' ? '*' : 'http://localhost:5173' }));
+// app.use(cors({ origin: 'http://localhost:5173' }));
+
 app.use(express.json());
 
 // ── Earnings ──────────────────────────────────────────────────────────────
@@ -140,15 +140,11 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Finance Tracker API running' });
 });
 
-// ── Serve built frontend in production ───────────────────────────────────
 if (process.env.NODE_ENV === 'production') {
-  const distPath = join(__dirname, '..', 'dist');
-
-  app.use(express.static(distPath));
-
-  app.get('/:path(.*)', (req, res) => {
-  res.sendFile(join(distPath, 'index.html'));
-});
+  app.use(express.static(path.join(__dirname, '../dist')));
+  app.use((req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  });
 }
 
 app.listen(PORT, () => {
