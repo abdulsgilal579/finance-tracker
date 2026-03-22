@@ -144,9 +144,9 @@ app.get('/api/health', (req, res) => {
 if (process.env.NODE_ENV === 'production') {
   const distPath = join(__dirname, '..', 'dist');
   app.use(express.static(distPath));
-  app.use((req, res) => {
-    res.sendFile(join(distPath, 'index.html'));
-  });
+  app.get('/*', (req, res) => {
+  res.sendFile(join(distPath, 'index.html'));
+});
 }
 
 app.listen(PORT, () => {
