@@ -11,7 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = 3001;
 
-// app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: process.env.NODE_ENV === 'production' ? '*' : 'http://localhost:5173' }));
 
 app.use(express.json());
 
