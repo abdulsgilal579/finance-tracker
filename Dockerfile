@@ -1,4 +1,4 @@
-# ── Stage 1: Build ────────────────────────────────────────────────────────────
+# Dockerfile for Railway (auto-rebuild)
 FROM node:20-slim AS builder
 
 # Install native build tools required by better-sqlite3
