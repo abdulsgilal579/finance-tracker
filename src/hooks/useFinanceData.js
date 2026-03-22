@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-const API = 'http://localhost:3001/api';
+const API = import.meta.env.MODE === 'development' ? 'http://localhost:3001/api' : '/api';
 
 async function apiFetch(path, options = {}) {
   const res = await fetch(`${API}${path}`, {
