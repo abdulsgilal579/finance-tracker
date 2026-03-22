@@ -150,4 +150,5 @@ if (process.env.NODE_ENV === 'production') {
 app.listen(PORT, () => {
   console.log(`\n🗄️  SQLite database: finance.db`);
   console.log(`🚀 API server running at http://localhost:${PORT}\n`);
+  console.log("Changes made to main file");
 });
