@@ -3,10 +3,16 @@ import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
 import db from './db.js';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+
 const app = express();
 const PORT = 3001;
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+// app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: process.env.NODE_ENV === 'production' ? '*' : 'http://localhost:5173' }));
 app.use(express.json());
 
 // ── Earnings ──────────────────────────────────────────────────────────────
@@ -133,6 +139,13 @@ app.put('/api/wants-transfers', (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Finance Tracker API running' });
 });
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../dist')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`\n🗄️  SQLite database: finance.db`);
