@@ -143,10 +143,12 @@ app.get('/api/health', (req, res) => {
 // ── Serve built frontend in production ───────────────────────────────────
 if (process.env.NODE_ENV === 'production') {
   const distPath = join(__dirname, '..', 'dist');
+
   app.use(express.static(distPath));
+
   app.get('/*', (req, res) => {
-  res.sendFile(join(distPath, 'index.html'));
-});
+    res.sendFile(join(distPath, 'index.html'));
+  });
 }
 
 app.listen(PORT, () => {
