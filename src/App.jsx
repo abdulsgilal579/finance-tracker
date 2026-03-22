@@ -23,7 +23,6 @@ function App() {
     surplusTransfers,
     efWithdrawals,
     wantsTransfers,
-    // DB write helpers
     addEarning,
     removeEarning,
     addExpense,
@@ -48,35 +47,33 @@ function App() {
   const currentMonthGoalsPlanned = goals.reduce((sum, g) => sum + (g.plannedSavings || 0), 0);
   const wantsRemaining = Math.max(0, allocation.wants - currentMonthSpentWants - currentMonthGoalsPlanned);
 
-  const globalTotalEarnings    = earningsList.reduce((sum, e) => sum + e.amount, 0);
+  const globalTotalEarnings   = earningsList.reduce((sum, e) => sum + e.amount, 0);
   const totalSavings           = globalTotalEarnings * 0.2;
   const totalSurplusTransfers  = surplusTransfers.reduce((sum, t) => sum + t.amount, 0);
   const spentSavings           = expenses.filter(e => e.category === 'savings').reduce((sum, e) => sum + e.amount, 0);
   const totalEFWithdrawals     = efWithdrawals.reduce((sum, w) => sum + w.amount, 0);
   const cumulativeEFBalance    = emergencyInitial + totalSavings + totalSurplusTransfers - spentSavings - totalEFWithdrawals;
 
-  // Show a helpful error if the backend server isn't running
+  // ── Error state ───────────────────────────────────────────────────────────
   if (loaded && error) {
     return (
-      <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-        <div style={{ textAlign: 'center', maxWidth: '480px', padding: '2rem' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>⚠️</div>
-          <h2 style={{ color: '#ef4444', marginBottom: '0.75rem' }}>Backend Not Running</h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>{error}</p>
-          <code style={{ background: 'var(--bg-secondary)', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.88rem' }}>
-            npm run dev:server
-          </code>
+      <div className="state-screen">
+        <div className="state-card">
+          <span className="state-icon">⚠️</span>
+          <h2>Backend Not Running</h2>
+          <p>{error}</p>
+          <code>npm run dev:server</code>
         </div>
       </div>
     );
   }
 
-  // Loading state while DB hydrates
+  // ── Loading state ─────────────────────────────────────────────────────────
   if (!loaded) {
     return (
-      <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-        <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>💼</div>
+      <div className="state-screen">
+        <div className="state-card">
+          <div className="spinner" />
           <p>Loading your finance data…</p>
         </div>
       </div>
@@ -86,25 +83,22 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header glass-panel">
-        <div className="header-content">
+        <div className="header-left">
           <h1>Financial <span className="text-gradient">Tracker</span></h1>
           <p>Master your money with the 50-30-20 rule.</p>
         </div>
-        <div className="earnings-input" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+        <div className="month-picker-group">
           <label>Selected Month</label>
-          <div className="input-wrapper" style={{ padding: '0', marginTop: '0.25rem' }}>
-            <input
-              type="month"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              style={{ background: 'transparent', border: 'none', color: 'white', padding: '0.75rem 1rem', width: '100%', outline: 'none', fontFamily: 'inherit', fontSize: '1.1rem', cursor: 'pointer' }}
-            />
-          </div>
+          <input
+            type="month"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+          />
         </div>
       </header>
 
       <main className="dashboard-grid">
-        <div className="col-span-full animate-fade-in" style={{ animationDelay: '0.1s' }}>
+        <div className="col-span-full animate-fade-in" style={{ animationDelay: '0.05s' }}>
           <AllocationSummary
             allocation={allocation}
             spentNeeds={currentMonthSpentNeeds}
@@ -113,7 +107,7 @@ function App() {
           />
         </div>
 
-        <div className="col-span-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+        <div className="col-span-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
           <Insights
             allocation={allocation}
             expenses={currentMonthExpenses}
@@ -125,7 +119,7 @@ function App() {
           />
         </div>
 
-        <div className="col-span-4 flex-col gap-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+        <div className="col-span-4 flex-col gap-6 animate-fade-in" style={{ animationDelay: '0.15s' }}>
           <EmergencyFund
             accumulatedBalance={cumulativeEFBalance}
             rawBalance={cumulativeEFBalance}
@@ -147,7 +141,7 @@ function App() {
           />
         </div>
 
-        <div className="col-span-full animate-fade-in" style={{ animationDelay: '0.4s' }}>
+        <div className="col-span-full animate-fade-in" style={{ animationDelay: '0.2s' }}>
           <EarningsTracker
             earnings={earningsList}
             addEarning={addEarning}
@@ -156,7 +150,7 @@ function App() {
           />
         </div>
 
-        <div className="col-span-full animate-fade-in" style={{ animationDelay: '0.5s' }}>
+        <div className="col-span-full animate-fade-in" style={{ animationDelay: '0.25s' }}>
           <ExpenseTracker
             expenses={expenses}
             addExpense={addExpense}
